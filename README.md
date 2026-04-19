@@ -1,6 +1,6 @@
 # Projet TS/JS 3IW
 
-Base TypeScript pour l'API stocks.
+API REST de stocks en TypeScript, avec persistance JSON locale.
 
 ## Scripts
 
@@ -8,3 +8,13 @@ Base TypeScript pour l'API stocks.
 - `npm run build` pour compiler
 - `npm start` pour exécuter la version compilée
 - `npm run check` pour vérifier les types
+
+## Routes
+
+- `GET /health`
+- `GET /api/stocks`
+- `GET /api/stocks/:id`
+- `POST /api/stocks`
+- `PATCH /api/stocks/:id`
+- `DELETE /api/stocks/:id`
+

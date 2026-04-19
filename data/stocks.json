@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "symbol": "AAPL",
+    "name": "Apple Inc.",
+    "sector": "Technology",
+    "price": 198.34,
+    "currency": "USD",
+    "marketCap": 3050000000000,
+    "updatedAt": "2026-04-10T00:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "symbol": "MSFT",
+    "name": "Microsoft Corporation",
+    "sector": "Technology",
+    "price": 421.16,
+    "currency": "USD",
+    "marketCap": 3140000000000,
+    "updatedAt": "2026-04-10T00:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "symbol": "TSLA",
+    "name": "Tesla, Inc.",
+    "sector": "Automotive",
+    "price": 176.52,
+    "currency": "USD",
+    "marketCap": 560000000000,
+    "updatedAt": "2026-04-10T00:00:00.000Z"
+  }
+]
