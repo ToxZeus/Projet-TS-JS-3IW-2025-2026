@@ -1,10 +1,10 @@
-import { fetchStocks } from "./api/stocksApi";
-import { renderFetchError, renderStocksSummary } from "./ui/stockConsoleView";
+import { renderFetchError, renderStockDashboard } from "./ui/stockConsoleView";
+import { loadStockDashboard } from "./services/stockService";
 
 async function main(): Promise<void> {
   try {
-    const stocks = await fetchStocks();
-    renderStocksSummary(stocks);
+    const dashboard = await loadStockDashboard(["AAPL", "TSLA"]);
+    renderStockDashboard(dashboard);
   } catch (error) {
     renderFetchError(error);
     process.exitCode = 1;

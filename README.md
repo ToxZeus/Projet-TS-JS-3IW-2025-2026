@@ -22,4 +22,5 @@ API source utilisée:
 - `npm run build` compile TypeScript
 - `npm start` exécute le build compilé
 - `npm run check` vérifie le typage strict
+- `npm run test` lance les tests de parsing, erreurs et service
 

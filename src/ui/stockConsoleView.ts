@@ -1,17 +1,18 @@
-import { StockApiItem } from "../models/stockApi";
-import { buildPriceSeries } from "../charts/priceSeries";
+import type { StockDashboard, StockComparison } from "../services/stockService";
 
-export function renderStocksSummary(stocks: StockApiItem[]): void {
-  console.log(`Loaded ${stocks.length} stocks from remote API.`);
+function formatComparison(comparison: StockComparison): string {
+  return `${comparison.first.symbol} vs ${comparison.second.symbol}`;
+}
 
-  const preview = stocks.slice(0, 5);
-  preview.forEach((stock) => {
-    const lastPoint = buildPriceSeries(stock).at(-1);
-    console.log(
-      `- ${stock.symbol} | ${stock.name} | ${stock.currentPrice} ${stock.currency}` +
-        (lastPoint ? ` | latest history: ${lastPoint.date} => ${lastPoint.price}` : "")
-    );
-  });
+export function renderStockDashboard(dashboard: StockDashboard): void {
+  console.log(`Loaded ${dashboard.stocks.length} stocks from remote API.`);
+  console.log(`Comparison: ${formatComparison(dashboard.comparison)}`);
+  console.log(
+    `- ${dashboard.comparison.first.symbol} | points: ${dashboard.series[0].length} | current: ${dashboard.comparison.first.currentPrice} ${dashboard.comparison.first.currency}`
+  );
+  console.log(
+    `- ${dashboard.comparison.second.symbol} | points: ${dashboard.series[1].length} | current: ${dashboard.comparison.second.currentPrice} ${dashboard.comparison.second.currency}`
+  );
 }
 
 export function renderFetchError(error: unknown): void {
