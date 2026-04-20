@@ -1,9 +1,14 @@
-import { createApp } from "./app";
-import { config } from "./config";
+import { fetchStocks } from "./api/stocksApi";
+import { renderFetchError, renderStocksSummary } from "./ui/stockConsoleView";
 
-const app = createApp();
+async function main(): Promise<void> {
+  try {
+    const stocks = await fetchStocks();
+    renderStocksSummary(stocks);
+  } catch (error) {
+    renderFetchError(error);
+    process.exitCode = 1;
+  }
+}
 
-app.listen(config.port, () => {
-  console.log(`Stocks API running on http://localhost:${config.port}`);
-});
-console.log("Projet TS/JS 3IW prêt pour l'API stocks.");
+void main();

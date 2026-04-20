@@ -1,20 +1,25 @@
 # Projet TS/JS 3IW
 
-API REST de stocks en TypeScript, avec persistance JSON locale.
+Ce jalon couvre uniquement:
+
+- architecture TypeScript
+- récupération des données via API distante
+
+API source utilisée:
+
+- https://keligmartin.github.io/api/stocks.json
+
+## Architecture
+
+- `src/models` types et validation runtime des données API
+- `src/api` appels réseau `fetch` avec `async/await`
+- `src/ui` affichage (console pour ce jalon)
+- `src/charts` transformation des données en séries exploitables
 
 ## Scripts
 
-- `npm run dev` pour lancer en développement
-- `npm run build` pour compiler
-- `npm start` pour exécuter la version compilée
-- `npm run check` pour vérifier les types
-
-## Routes
-
-- `GET /health`
-- `GET /api/stocks`
-- `GET /api/stocks/:id`
-- `POST /api/stocks`
-- `PATCH /api/stocks/:id`
-- `DELETE /api/stocks/:id`
+- `npm run dev` lance la récupération des données en mode watch
+- `npm run build` compile TypeScript
+- `npm start` exécute le build compilé
+- `npm run check` vérifie le typage strict
 
