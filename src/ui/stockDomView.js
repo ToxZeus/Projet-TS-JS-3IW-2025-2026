@@ -1,4 +1,19 @@
-import { fetchStocks } from "../api/stockApi.ts";
+const STOCKS_API_URL = "https://keligmartin.github.io/api/stocks.json";
+
+async function fetchStocks() {
+    const response = await fetch(STOCKS_API_URL, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+    }
+
+    return response.json();
+}
 
 export async function initialiserInterfaceUtilisateur() {
     const selecteurActions = document.getElementById('stockSelect');
