@@ -1,41 +1,62 @@
-const API_URL = "https://keligmartin.github.io/api/stocks.json";
+import { fetchStocks } from "../api/stockApi.ts";
 
-export async function initialiserInterface() {
-    const btn = document.getElementById('loadBtn');
-    const display = document.getElementById('displayArea');
+export async function initialiserInterfaceUtilisateur() {
+    const selecteurActions = document.getElementById('stockSelect');
+    const selecteurPeriode = document.getElementById('periodSelect');
+    const boutonCharger = document.getElementById('loadBtn');
+    const zoneAffichage = document.getElementById('displayArea');
 
-    if (!btn || !display) return;
+    if (!selecteurActions || !boutonCharger || !zoneAffichage) return;
 
-    btn.onclick = async () => {
-        display.innerHTML = "Chargement...";
+    const afficherErreur = (message) => {
+        zoneAffichage.innerHTML = `<p>Erreur : ${message}</p>`;
+    };
+
+    try {
+        const listeActions = await fetchStocks();
+        selecteurActions.innerHTML = "";
+        listeActions.forEach(action => {
+            const option = document.createElement('option');
+            option.value = action.symbol;
+            option.textContent = `${action.name} (${action.symbol})`;
+            selecteurActions.appendChild(option);
+        });
+    } catch (erreur) {
+        afficherErreur("Erreur lors du chargement de la liste des actions.");
+    }
+
+    boutonCharger.onclick = async () => {
+        zoneAffichage.innerHTML = "<em>Chargement...</em>";
 
         try {
-            const response = await fetch(API_URL);
-            const stocks = await response.json();
+            const listeActions = await fetchStocks();
+            const symbole = selecteurActions.value;
+            const limite = parseInt(selecteurPeriode.value);
+            const actionSelectionnee = listeActions.find(a => a.symbol === symbole);
 
-            const symbol = (document.getElementById('stockSelect') as HTMLSelectElement).value;
-            const limit = parseInt((document.getElementById('periodSelect') as HTMLSelectElement).value);
+            if (actionSelectionnee) {
+                const historique = actionSelectionnee.history.slice(-limite);
 
-            const selected = stocks.find((s: any) => s.symbol === symbol);
-
-            if (selected) {
-                const history = selected.history.slice(-limit);
-
-                let html = `<h2>${selected.name}</h2>`;
+                let html = `<h2>${actionSelectionnee.name}</h2>`;
+                html += `<p>Secteur : ${actionSelectionnee.sector} | Prix : ${actionSelectionnee.currentPrice} ${actionSelectionnee.currency}</p>`;
                 html += `<table border="1">
-                            <thead><tr><th>Date</th><th>Prix</th></tr></thead>
+                            <thead>
+                                <tr><th>Date</th><th>Prix</th><th>Volume</th></tr>
+                            </thead>
                             <tbody>`;
 
-                history.forEach((h: any) => {
-                    html += `<tr><td>${h.date}</td><td>${h.price}</td></tr>`;
+                historique.forEach(h => {
+                    html += `<tr><td>${h.date}</td><td>${h.price}</td><td>${h.volume}</td></tr>`;
                 });
 
                 html += `</tbody></table>`;
-                display.innerHTML = html;
+                zoneAffichage.innerHTML = html;
             }
-        } catch (error) {
-            display.innerHTML = "Erreur de connexion.";
+        } catch (erreur) {
+            afficherErreur("Erreur lors du chargement des données.");
+            console.error(erreur);
         }
     };
 }
-initialiserInterface();
+
+initialiserInterfaceUtilisateur();
