@@ -2,7 +2,7 @@
   "name": "projet-ts-js-3iw-2025-2026",
   "private": true,
   "version": "1.0.0",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "dev": "node ./node_modules/tsx/dist/cli.mjs watch src/index.ts",
     "build": "node ./node_modules/typescript/bin/tsc -p tsconfig.json",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "express": "^4.21.2",
-    "zod": "^3.24.1"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",

@@ -1,14 +1,14 @@
 import { fetchStocks } from "../api/stocksApi.js";
 
 export async function initialiserInterfaceUtilisateur() {
-    const selecteurActions = document.getElementById('stockSelect');
-    const selecteurPeriode = document.getElementById('periodSelect');
-    const boutonCharger = document.getElementById('loadBtn');
-    const zoneAffichage = document.getElementById('displayArea');
+    const selecteurActions = document.getElementById('stockSelect') as HTMLSelectElement;
+    const selecteurPeriode = document.getElementById('periodSelect') as HTMLSelectElement;
+    const boutonCharger = document.getElementById('loadBtn') as HTMLSelectElement;
+    const zoneAffichage = document.getElementById('displayArea') as HTMLSelectElement;
 
-    if (!selecteurActions || !boutonCharger || !zoneAffichage) return;
+    if (!selecteurActions || !selecteurPeriode || !boutonCharger || !zoneAffichage) return;
 
-    const afficherErreur = (message) => {
+    const afficherErreur = (message: string) => {
         zoneAffichage.innerHTML = `<p>Erreur : ${message}</p>`;
     };
 
