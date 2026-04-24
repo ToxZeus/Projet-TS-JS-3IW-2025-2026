@@ -22,6 +22,11 @@
 <hr>
 <div id="displayArea"></div>
 
-<script type="module" src="src/ui/stockDomView.js"></script>
+<script type="importmap">
+    {"imports": {"zod": "https://cdn.jsdelivr.net/npm/zod@3.22.4/+esm"}}
+</script>
+
+<script type="module" src="./dist/ui/stockDomView.js"></script>
+
 </body>
 </html>
