@@ -1,5 +1,5 @@
-import { renderFetchError, renderStockDashboard } from "./ui/stockConsoleView";
-import { loadStockDashboard } from "./services/stockService";
+import { renderFetchError, renderStockDashboard } from "./ui/stockConsoleView.js";
+import { loadStockDashboard } from "./services/stockService.js";
 
 async function main(): Promise<void> {
   try {

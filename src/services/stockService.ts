@@ -1,6 +1,6 @@
-import { buildPriceSeries, type PriceSeriesPoint } from "../charts/priceSeries";
-import { fetchStocks } from "../api/stocksApi";
-import type { StockApiItem, StocksApiResponse } from "../models/stockApi";
+import { buildPriceSeries, type PriceSeriesPoint } from "../charts/priceSeries.js";
+import { fetchStocks } from "../api/stocksApi.js";
+import type { StockApiItem, StocksApiResponse } from "../models/stockApi.js";
 
 export type StockComparison = {
   first: StockApiItem;

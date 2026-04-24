@@ -1,4 +1,4 @@
-import { StockApiItem } from "../models/stockApi";
+import { StockApiItem } from "../models/stockApi.js";
 
 export type PriceSeriesPoint = {
   date: string;

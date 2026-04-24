@@ -1,19 +1,4 @@
-const STOCKS_API_URL = "https://keligmartin.github.io/api/stocks.json";
-
-async function fetchStocks() {
-    const response = await fetch(STOCKS_API_URL, {
-        method: "GET",
-        headers: {
-            "Accept": "application/json"
-        }
-    });
-
-    if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
-    }
-
-    return response.json();
-}
+import { fetchStocks } from "../api/stocksApi.js";
 
 export async function initialiserInterfaceUtilisateur() {
     const selecteurActions = document.getElementById('stockSelect');
@@ -45,27 +30,27 @@ export async function initialiserInterfaceUtilisateur() {
 
         try {
             const listeActions = await fetchStocks();
-            const symbole = selecteurActions.value;
-            const limite = parseInt(selecteurPeriode.value);
-            const actionSelectionnee = listeActions.find(a => a.symbol === symbole);
+            const symboleSelectionne = selecteurActions.value;
+            const limitePeriode = parseInt(selecteurPeriode.value);
+            const actionSelectionnee = listeActions.find(action => action.symbol === symboleSelectionne);
 
             if (actionSelectionnee) {
-                const historique = actionSelectionnee.history.slice(-limite);
+                const historiqueFiltre = actionSelectionnee.history.slice(-limitePeriode);
 
-                let html = `<h2>${actionSelectionnee.name}</h2>`;
-                html += `<p>Secteur : ${actionSelectionnee.sector} | Prix : ${actionSelectionnee.currentPrice} ${actionSelectionnee.currency}</p>`;
-                html += `<table border="1">
+                let contenuHtml = `<h2>${actionSelectionnee.name}</h2>`;
+                contenuHtml += `<p>Secteur : ${actionSelectionnee.sector} | Prix : ${actionSelectionnee.currentPrice} ${actionSelectionnee.currency}</p>`;
+                contenuHtml += `<table border="1">
                             <thead>
                                 <tr><th>Date</th><th>Prix</th><th>Volume</th></tr>
                             </thead>
                             <tbody>`;
 
-                historique.forEach(h => {
-                    html += `<tr><td>${h.date}</td><td>${h.price}</td><td>${h.volume}</td></tr>`;
+                historiqueFiltre.forEach(pointHistorique => {
+                    contenuHtml += `<tr><td>${pointHistorique.date}</td><td>${pointHistorique.price}</td><td>${pointHistorique.volume}</td></tr>`;
                 });
 
-                html += `</tbody></table>`;
-                zoneAffichage.innerHTML = html;
+                contenuHtml += `</tbody></table>`;
+                zoneAffichage.innerHTML = contenuHtml;
             }
         } catch (erreur) {
             afficherErreur("Erreur lors du chargement des données.");

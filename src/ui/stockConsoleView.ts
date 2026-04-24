@@ -1,4 +1,4 @@
-import type { StockDashboard, StockComparison } from "../services/stockService";
+import type { StockDashboard, StockComparison } from "../services/stockService.js";
 
 function formatComparison(comparison: StockComparison): string {
   return `${comparison.first.symbol} vs ${comparison.second.symbol}`;

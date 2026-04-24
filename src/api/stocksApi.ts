@@ -1,5 +1,5 @@
-import { config } from "../config";
-import { parseStocksApiResponse, StocksApiResponse } from "../models/stockApi";
+import { config } from "../config.js";
+import { parseStocksApiResponse, StocksApiResponse } from "../models/stockApi.js";
 
 export class NetworkError extends Error {
   constructor(message: string) {
