@@ -3,10 +3,13 @@ import { fetchStocks } from "../api/stocksApi.js";
 export async function initialiserInterfaceUtilisateur() {
     const selecteurActions = document.getElementById('stockSelect') as HTMLSelectElement;
     const selecteurPeriode = document.getElementById('periodSelect') as HTMLSelectElement;
-    const boutonCharger = document.getElementById('loadBtn') as HTMLSelectElement;
-    const zoneAffichage = document.getElementById('displayArea') as HTMLSelectElement;
+    const boutonCharger = document.getElementById('loadBtn') as HTMLButtonElement;
+    const zoneAffichage = document.getElementById('displayArea') as HTMLElement;
 
     if (!selecteurActions || !selecteurPeriode || !boutonCharger || !zoneAffichage) return;
+
+    const symboleSauvegarde = localStorage.getItem('selectedStockSymbol');
+    const periodeSauvegardee = localStorage.getItem('selectedPeriod');
 
     const afficherErreur = (message: string) => {
         zoneAffichage.innerHTML = `<p>Erreur : ${message}</p>`;
@@ -15,12 +18,20 @@ export async function initialiserInterfaceUtilisateur() {
     try {
         const listeActions = await fetchStocks();
         selecteurActions.innerHTML = "";
-        listeActions.forEach(action => {
+        listeActions.forEach((action: any) => {
             const option = document.createElement('option');
             option.value = action.symbol;
             option.textContent = `${action.name} (${action.symbol})`;
             selecteurActions.appendChild(option);
         });
+        
+        if (symboleSauvegarde) selecteurActions.value = symboleSauvegarde;
+        if (periodeSauvegardee) selecteurPeriode.value = periodeSauvegardee;
+
+        if(symboleSauvegarde && periodeSauvegardee) {
+            boutonCharger.click();
+        }
+
     } catch (erreur) {
         afficherErreur("Erreur lors du chargement de la liste des actions.");
     }
@@ -32,8 +43,15 @@ export async function initialiserInterfaceUtilisateur() {
             const listeActions = await fetchStocks();
             const symboleSelectionne = selecteurActions.value;
             const limitePeriode = parseInt(selecteurPeriode.value);
-            const actionSelectionnee = listeActions.find(action => action.symbol === symboleSelectionne);
-
+            const actionSelectionnee = listeActions.find((action: any) => action.symbol === symboleSelectionne);
+            
+            try {
+                localStorage.setItem('selectedStockSymbol', symboleSelectionne);
+                localStorage.setItem('selectedPeriod', selecteurPeriode.value);
+            } catch (e) {
+                console.error("La sauvegarde des préférences a échoué.");
+            }
+            
             if (actionSelectionnee) {
                 const historiqueFiltre = actionSelectionnee.history.slice(-limitePeriode);
 
@@ -45,7 +63,7 @@ export async function initialiserInterfaceUtilisateur() {
                             </thead>
                             <tbody>`;
 
-                historiqueFiltre.forEach(pointHistorique => {
+                historiqueFiltre.forEach((pointHistorique: any) => {
                     contenuHtml += `<tr><td>${pointHistorique.date}</td><td>${pointHistorique.price}</td><td>${pointHistorique.volume}</td></tr>`;
                 });
 
