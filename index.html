@@ -2,31 +2,42 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Stock Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashbord</title>
+    <script type="importmap">{"imports": {"zod": "https://cdn.jsdelivr.net/npm/zod@3.22.4/+esm"}}</script>
+    <script type="module" src="./dist/ui/stockDomView.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: 'class' }</script>
 </head>
-<body>
-<h1>Mon Dashboard Stocks</h1>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 p-6 transition-colors">
 
-<select id="stockSelect">
-    <option>Chargement des actions...</option>
-</select>
+    <div class="max-w-2xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-xl font-bold uppercase tracking-widest">Dashboard</h1>
+            <button id="themeToggle" class="text-sm border border-gray-300 dark:border-gray-600 px-3 py-1 rounded">
+                Mode <span class="dark:hidden">Sombre</span><span class="hidden dark:inline">Clair</span>
+            </button>
+        </div>
 
-<select id="periodSelect">
-    <option value="7">1 semaine</option>
-    <option value="30">1 mois</option>
-    <option value="365">1 an</option>
-</select>
+        <div class="flex gap-4 mb-6">
+            <select id="stockSelect" class="bg-transparent border-b-2 border-gray-300 dark:border-gray-600 py-1 focus:border-blue-500 outline-none flex-1 dark:bg-gray-900 dark:text-white">
+                <option>Chargement</option>
+            </select>
 
-<button id="loadBtn">Charger les données</button>
+            <select id="periodSelect" class="bg-transparent border-b-2 border-gray-300 dark:border-gray-600 py-1 focus:border-blue-500 outline-none w-32 dark:bg-gray-900 dark:text-white">
+                <option value="7">1 semaine</option>
+                <option value="30" selected>1 mois</option>
+                <option value="365">1 an</option>
+            </select>
 
-<hr>
-<div id="displayArea"></div>
+            <button id="loadBtn" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition">
+                Charger
+            </button>
+        </div>
 
-<script type="importmap">
-    {"imports": {"zod": "https://cdn.jsdelivr.net/npm/zod@3.22.4/+esm"}}
-</script>
-
-<script type="module" src="./dist/ui/stockDomView.js"></script>
-
+        <div id="displayArea" class="border-t dark:border-gray-800 pt-6">
+            <p class="text-gray-400 italic text-sm text-center">Aucune donnée sélectionnée.</p>
+        </div>
+    </div>
 </body>
 </html>
