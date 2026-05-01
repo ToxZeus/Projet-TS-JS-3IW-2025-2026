@@ -5,6 +5,7 @@ export type PriceSeriesPoint = {
   price: number;
 };
 
+// Convert stock history into simple chart points.
 export function buildPriceSeries(stock: StockApiItem): PriceSeriesPoint[] {
   return stock.history.map((point) => ({
     date: point.date,
