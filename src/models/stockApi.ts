@@ -1,11 +1,13 @@
 import { z } from "zod";
 
+// Schema for one point in the stock history.
 export const stockHistoryPointSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   price: z.number().finite(),
   volume: z.number().int().nonnegative()
 });
 
+// Schema for one stock from the remote API.
 export const stockApiItemSchema = z.object({
   symbol: z.string().trim().min(1),
   name: z.string().trim().min(1),
@@ -15,12 +17,14 @@ export const stockApiItemSchema = z.object({
   history: z.array(stockHistoryPointSchema)
 });
 
+// Schema for the full API response.
 export const stocksApiResponseSchema = z.array(stockApiItemSchema);
 
 export type StockHistoryPoint = z.infer<typeof stockHistoryPointSchema>;
 export type StockApiItem = z.infer<typeof stockApiItemSchema>;
 export type StocksApiResponse = z.infer<typeof stocksApiResponseSchema>;
 
+// Validate unknown JSON and return typed data.
 export function parseStocksApiResponse(payload: unknown): StocksApiResponse {
   return stocksApiResponseSchema.parse(payload);
 }

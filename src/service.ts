@@ -1,6 +1,7 @@
 import { createStock, deleteStock, findStockById, listStocks, updateStock } from "./repository";
 import { StockCreateInput, StockUpdateInput } from "./types";
 
+// Filter stocks in memory using query options.
 export async function getStocks(filters: {
   q?: string;
   sector?: string;
@@ -19,12 +20,15 @@ export async function getStocks(filters: {
   });
 }
 
+// Re-export repository functions for the API routes.
 export { createStock, deleteStock, findStockById, updateStock };
 
+// Alias for updateStock.
 export async function replaceStock(id: number, input: StockUpdateInput): Promise<ReturnType<typeof updateStock>> {
   return updateStock(id, input);
 }
 
+// Alias for createStock.
 export async function addStock(input: StockCreateInput) {
   return createStock(input);
 }

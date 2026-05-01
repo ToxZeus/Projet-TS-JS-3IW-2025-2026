@@ -6,12 +6,15 @@ import { ZodError } from "zod";
 export function createApp() {
   const app = express();
 
+  // Read JSON bodies sent by the client.
   app.use(express.json());
 
+  // Small route to check if the API is running.
   app.get("/health", (_request, response) => {
     response.json({ status: "ok" });
   });
 
+  // Get the stock list with validated query filters.
   app.get("/api/stocks", async (request, response, next) => {
     try {
       const filters = stockSearchSchema.parse(request.query);
@@ -22,6 +25,7 @@ export function createApp() {
     }
   });
 
+  // Get one stock by id after checking the id format.
   app.get("/api/stocks/:id", async (request, response, next) => {
     try {
       const id = Number(request.params.id);
@@ -44,6 +48,7 @@ export function createApp() {
     }
   });
 
+  // Create a stock from validated request data.
   app.post("/api/stocks", async (request, response, next) => {
     try {
       const payload = stockCreateSchema.parse(request.body);
@@ -54,6 +59,7 @@ export function createApp() {
     }
   });
 
+  // Update some fields of one stock.
   app.patch("/api/stocks/:id", async (request, response, next) => {
     try {
       const id = Number(request.params.id);
@@ -77,6 +83,7 @@ export function createApp() {
     }
   });
 
+  // Delete one stock and return 204 if it worked.
   app.delete("/api/stocks/:id", async (request, response, next) => {
     try {
       const id = Number(request.params.id);
@@ -99,6 +106,7 @@ export function createApp() {
     }
   });
 
+  // Handle validation errors and unexpected server errors.
   app.use((error: unknown, _request: express.Request, response: express.Response, _next: express.NextFunction) => {
     if (error instanceof ZodError) {
       response.status(400).json({ error: "Validation error", details: error.message });

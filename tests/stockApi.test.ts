@@ -3,6 +3,7 @@ import { parseStocksApiResponse } from "../src/models/stockApi";
 import { ApiResponseError, fetchStocks, InvalidApiDataError, NetworkError } from "../src/api/stocksApi";
 import { buildDashboard, selectComparisonStocks } from "../src/services/stockService";
 
+// Valid sample payload used in several tests.
 const validStocksPayload = [
   {
     symbol: "AAPL",
@@ -35,10 +36,12 @@ const validStocksPayload = [
 ];
 
 afterEach(() => {
+  // Clear global stubs after each test.
   vi.unstubAllGlobals();
   vi.unstubAllEnvs();
 });
 
+// Tests for runtime schema validation.
 describe("parseStocksApiResponse", () => {
   it("accepts a valid payload", () => {
     const parsed = parseStocksApiResponse(validStocksPayload);
@@ -61,6 +64,7 @@ describe("parseStocksApiResponse", () => {
   });
 });
 
+// Tests for API client error cases.
 describe("fetchStocks", () => {
   it("throws ApiResponseError on HTTP failure", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
@@ -89,6 +93,7 @@ describe("fetchStocks", () => {
   });
 });
 
+// Tests for dashboard build and comparison selection.
 describe("stockService", () => {
   it("selects two stocks for comparison", () => {
     const comparison = selectComparisonStocks(validStocksPayload, ["TSLA", "AAPL"]);

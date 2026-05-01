@@ -1,9 +1,11 @@
 import type { StockDashboard, StockComparison } from "../services/stockService.js";
 
+// Build a short label for compared stocks.
 function formatComparison(comparison: StockComparison): string {
   return `${comparison.first.symbol} vs ${comparison.second.symbol}`;
 }
 
+// Show dashboard summary in the terminal.
 export function renderStockDashboard(dashboard: StockDashboard): void {
   console.log(`Loaded ${dashboard.stocks.length} stocks from remote API.`);
   console.log(`Comparison: ${formatComparison(dashboard.comparison)}`);
@@ -15,6 +17,7 @@ export function renderStockDashboard(dashboard: StockDashboard): void {
   );
 }
 
+// Show a clear error message if loading fails.
 export function renderFetchError(error: unknown): void {
   if (error instanceof Error) {
     console.error(`Data fetch error: ${error.name} - ${error.message}`);

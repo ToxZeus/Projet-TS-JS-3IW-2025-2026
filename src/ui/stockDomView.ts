@@ -1,6 +1,7 @@
 import { fetchStocks } from "../api/stocksApi.js";
 
 export async function initialiserInterfaceUtilisateur() {
+    // Get and type all needed UI elements.
     const selecteurActions = document.getElementById('stockSelect') as HTMLSelectElement;
     const selecteurPeriode = document.getElementById('periodSelect') as HTMLSelectElement;
     const boutonCharger = document.getElementById('loadBtn') as HTMLButtonElement;
@@ -8,12 +9,14 @@ export async function initialiserInterfaceUtilisateur() {
 
     if (!selecteurActions || !selecteurPeriode || !boutonCharger || !zoneAffichage) return;
 
+    // Load saved filters from localStorage.
     const symboleSauvegarde = localStorage.getItem('selectedStockSymbol');
     const periodeSauvegardee = localStorage.getItem('selectedPeriod');
 
     const boutonTheme = document.getElementById('themeToggle') as HTMLButtonElement;
 
     if (boutonTheme) {
+        // Load saved theme and let the user toggle it.
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.classList.add('dark');
         }
@@ -26,10 +29,12 @@ export async function initialiserInterfaceUtilisateur() {
     }
 
     const afficherErreur = (message: string) => {
+        // Helper to show an error message in the page.
         zoneAffichage.innerHTML = `<p>Erreur : ${message}</p>`;
     };
 
     try {
+        // Load stocks to fill the symbol select.
         const listeActions = await fetchStocks();
         selecteurActions.innerHTML = "";
         listeActions.forEach((action: any) => {
@@ -44,6 +49,7 @@ export async function initialiserInterfaceUtilisateur() {
         if (periodeSauvegardee) selecteurPeriode.value = periodeSauvegardee;
 
         if(symboleSauvegarde && periodeSauvegardee) {
+            // Auto-load data if both saved values exist.
             boutonCharger.click();
         }
 
@@ -52,15 +58,18 @@ export async function initialiserInterfaceUtilisateur() {
     }
 
     boutonCharger.onclick = async () => {
+        // Show a loading message while fetching data.
         zoneAffichage.innerHTML = "<em>Chargement...</em>";
 
         try {
+            // Reload stocks and find the selected one.
             const listeActions = await fetchStocks();
             const symboleSelectionne = selecteurActions.value;
             const limitePeriode = parseInt(selecteurPeriode.value);
             const actionSelectionnee = listeActions.find((action: any) => action.symbol === symboleSelectionne);
             
             try {
+                // Save current choices for next page load.
                 localStorage.setItem('selectedStockSymbol', symboleSelectionne);
                 localStorage.setItem('selectedPeriod', selecteurPeriode.value);
             } catch (e) {
@@ -68,8 +77,10 @@ export async function initialiserInterfaceUtilisateur() {
             }
 
             if (actionSelectionnee) {
+                // Keep only the selected period in history.
                 const historiqueFiltre = actionSelectionnee.history.slice(-limitePeriode);
 
+                // Build the HTML for summary and table.
                 let contenuHtml = `<h2 class="text-lg font-bold mb-1">${actionSelectionnee.name}</h2>`;
                 contenuHtml += `<p class="text-xs text-gray-500 mb-4">Secteur : ${actionSelectionnee.sector} | Prix actuel : ${actionSelectionnee.currentPrice} ${actionSelectionnee.currency}</p>`;
 
@@ -84,6 +95,7 @@ export async function initialiserInterfaceUtilisateur() {
                     </thead>
                     <tbody>`;
 
+                // Add one row per history point.
                 historiqueFiltre.forEach((point: any) => {
                     contenuHtml += `
                         <tr class="border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/40">
@@ -103,4 +115,5 @@ export async function initialiserInterfaceUtilisateur() {
     };
 }
 
+// Start the UI when the module loads in the browser.
 initialiserInterfaceUtilisateur();

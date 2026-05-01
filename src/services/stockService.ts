@@ -13,6 +13,7 @@ export type StockDashboard = {
   series: [PriceSeriesPoint[], PriceSeriesPoint[]];
 };
 
+// Choose two stocks for comparison, using preferred symbols first.
 export function selectComparisonStocks(
   stocks: StocksApiResponse,
   preferredSymbols: readonly string[] = []
@@ -38,6 +39,7 @@ export function selectComparisonStocks(
   };
 }
 
+// Build all data needed by the views.
 export function buildDashboard(stocks: StocksApiResponse, preferredSymbols: readonly string[] = []): StockDashboard {
   const comparison = selectComparisonStocks(stocks, preferredSymbols);
 
@@ -48,6 +50,7 @@ export function buildDashboard(stocks: StocksApiResponse, preferredSymbols: read
   };
 }
 
+// Main service function: fetch data then build dashboard.
 export async function loadStockDashboard(preferredSymbols: readonly string[] = []): Promise<StockDashboard> {
   const stocks = await fetchStocks();
   return buildDashboard(stocks, preferredSymbols);
