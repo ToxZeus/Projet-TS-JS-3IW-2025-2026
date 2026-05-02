@@ -1,3 +1,4 @@
+// Define core stock data structures for the local database and api operations.
 export type Stock = {
   id: number;
   symbol: string;

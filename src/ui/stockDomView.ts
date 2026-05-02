@@ -3,17 +3,20 @@ import { createStockChartManager, type SupportedChartType } from "../charts/stoc
 import type { StockApiItem, StocksApiResponse } from "../models/stockApi.js";
 import { createToastManager } from "./toast.js";
 
+// Utility to format iso date strings into French standard (DD/MM/YYYY).
 function formatDateToFrench(date: string): string {
   const [year, month, day] = date.split("-");
   return `${day}/${month}/${year}`;
 }
 
+// Get or set the state of checkboxes within the stock selection list.
 function getCheckedSymbols(container: HTMLElement): string[] {
   return [...container.querySelectorAll<HTMLInputElement>('input[type="checkbox"][data-stock-symbol]')]
     .filter((checkbox) => checkbox.checked)
     .map((checkbox) => checkbox.value);
 }
 
+// Update the visual state of checkboxes based on a list of symbols.
 function setCheckedSymbols(container: HTMLElement, symbols: string[]): void {
   const selected = new Set(symbols);
   [...container.querySelectorAll<HTMLInputElement>('input[type="checkbox"][data-stock-symbol]')].forEach((checkbox) => {
@@ -21,6 +24,7 @@ function setCheckedSymbols(container: HTMLElement, symbols: string[]): void {
   });
 }
 
+// Dynamically build and render the html checklist for available stocks.
 function renderStockChecklist(
   container: HTMLElement,
   stocks: StocksApiResponse,
@@ -45,10 +49,12 @@ function renderStockChecklist(
   });
 }
 
+// Generate a unique cache key based on current filter settings.
 function buildFilterKey(symbols: string[], period: number, chartType: SupportedChartType): string {
   return `${[...symbols].sort((a, b) => a.localeCompare(b)).join(",")}|${period}|${chartType}`;
 }
 
+// Map custom error classes to user-friendly messages
 function getReadableErrorMessage(error: unknown): string {
   if (error instanceof NetworkError) {
     return "Erreur réseau: vérifie ta connexion puis réessaie.";
@@ -65,11 +71,13 @@ function getReadableErrorMessage(error: unknown): string {
   return "Une erreur inattendue est survenue.";
 }
 
+// Prepare and trigger a csv file download from the current stock data.
 function escapeCsvCell(value: string | number): string {
   const text = String(value).replace(/"/g, "\"\"");
   return `"${text}"`;
 }
 
+// Generate a formatted csv string from stock history and metadata.
 function buildCsvContent(stocks: StockApiItem[], period: number): string {
   const header = ["symbol", "name", "sector", "currency", "date", "price", "volume", "currentPrice"];
   const rows = stocks
@@ -96,6 +104,7 @@ function buildCsvContent(stocks: StockApiItem[], period: number): string {
     .join("\n");
 }
 
+// Create and trigger a file download for the exported csv data.
 function exportStocksToCsv(stocks: StockApiItem[], period: number): void {
   const csv = buildCsvContent(stocks, period);
   const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8;" });
@@ -111,6 +120,7 @@ function exportStocksToCsv(stocks: StockApiItem[], period: number): void {
   URL.revokeObjectURL(url);
 }
 
+// Generate an expandable html table section for tabular data view.
 function renderDetailsTable(stocks: StockApiItem[], period: number): string {
   const sections = stocks.map((stock) => {
     const rows = stock.history
@@ -148,7 +158,9 @@ function renderDetailsTable(stocks: StockApiItem[], period: number): string {
     </details>`;
 }
 
+// Main function to initialize dom elements, event listeners, and default theme.
 export async function initializeUserInterface(): Promise<void> {
+  // Dom element references for ui interaction and data display.
   const stockChecklistContainer = document.getElementById("stockChecklist") as HTMLElement | null;
   const selectAllButton = document.getElementById("selectAllStocksBtn") as HTMLButtonElement | null;
   const resetSelectionButton = document.getElementById("clearStocksBtn") as HTMLButtonElement | null;
@@ -164,8 +176,10 @@ export async function initializeUserInterface(): Promise<void> {
   if (!stockChecklistContainer || !periodSelect || !chartTypeSelect || !loadButton || !displayArea) {
     return;
   }
+  // Initialize notification system for user feedback.
   const toasts = createToastManager(toastContainer ?? document.body);
 
+  // Manage ui state for theme switching and selection summary text.
   const updateSelectionSummary = (): void => {
     if (!selectionSummary) {
       return;
@@ -190,6 +204,7 @@ export async function initializeUserInterface(): Promise<void> {
     };
   }
 
+  // Internal state to optimize performance and prevent redundant renders.
   let stocksCache: StocksApiResponse | null = null;
   let lastFilterKey: string | null = null;
   let lastRenderedStocks: StockApiItem[] = [];
@@ -209,6 +224,7 @@ export async function initializeUserInterface(): Promise<void> {
     return stocksCache;
   };
 
+  // Initial setup: fetch data, restore preferences and perform first render.
   try {
     const availableStocks = await loadStocksWithCache();
     const savedSymbolsRaw = localStorage.getItem("selectedStockSymbols");
@@ -235,6 +251,7 @@ export async function initializeUserInterface(): Promise<void> {
     return;
   }
 
+  // Handle the rendering of the chart and details table based on selection.
   const renderDashboard = async (isManualTrigger = false): Promise<void> => {
     try {
       const availableStocks = await loadStocksWithCache();
@@ -247,6 +264,7 @@ export async function initializeUserInterface(): Promise<void> {
         return;
       }
 
+      // Check if filters have changed before proceeding with a new render.
       const filterKey = buildFilterKey(selectedSymbols, selectedPeriod, selectedChartType);
       if (filterKey === lastFilterKey) {
         console.info("Aucun changement de filtre, rendu conservé depuis le cache mémoire.");
@@ -312,9 +330,12 @@ export async function initializeUserInterface(): Promise<void> {
     }
   };
 
+  // Bind interaction buttons for loading, exporting, and selection management.
   loadButton.onclick = () => {
     void renderDashboard(true);
   };
+
+  // Bind interaction buttons for exporting data and managing bulk selections.
 
   if (exportCsvButton) {
     exportCsvButton.onclick = () => {

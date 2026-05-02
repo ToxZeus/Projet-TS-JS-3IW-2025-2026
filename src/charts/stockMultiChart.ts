@@ -16,20 +16,24 @@ type StockChartManager = {
   render: (stocks: StockApiItem[], periodInDays: number, chartType: SupportedChartType) => void;
 };
 
+// Helper to apply opacity to hsl color strings for chart backgrounds.
 function withAlpha(hslColor: string, alpha: number): string {
   return hslColor.replace("hsl(", "hsla(").replace(")", `, ${alpha})`);
 }
 
+// Generate distinct colors based on the number of stocks to display.
 function createPaletteColor(index: number, total: number): string {
   const hue = Math.round((index * 360) / Math.max(total, 1));
   return `hsl(${hue}, 70%, 48%)`;
 }
 
+// Convert iso date strings to French format (DD/MM/YYYY).
 function formatDateToFr(date: string): string {
   const [year, month, day] = date.split("-");
   return `${day}/${month}/${year}`;
 }
 
+// Extract and map stock history data for a specific time period.
 function prepareStockHistory(stock: StockApiItem, periodInDays: number): PreparedStockHistory {
   const historySlice = stock.history.slice(-periodInDays);
   return {
@@ -39,6 +43,7 @@ function prepareStockHistory(stock: StockApiItem, periodInDays: number): Prepare
   };
 }
 
+// Build a sorted unique list of all dates present across multiple stock histories.
 function collectUnifiedDates(histories: PreparedStockHistory[]): string[] {
   const uniqueDates = new Set<string>();
 
@@ -49,6 +54,7 @@ function collectUnifiedDates(histories: PreparedStockHistory[]): string[] {
   return [...uniqueDates].sort((a, b) => a.localeCompare(b));
 }
 
+// Transform history data into Chart.js dataset objects for price and volume.
 function createDatasets(
   histories: PreparedStockHistory[],
   labels: string[],
@@ -91,6 +97,7 @@ function createDatasets(
   });
 }
 
+// Create a manager to handle rendering and updating the multi-series chart.
 export function createStockChartManager(canvas: HTMLCanvasElement): StockChartManager {
   let chart: Chart<"line" | "bar", (number | null)[], string> | null = null;
 

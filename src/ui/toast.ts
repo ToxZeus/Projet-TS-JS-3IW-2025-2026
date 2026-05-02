@@ -1,5 +1,6 @@
 export type ToastType = "success" | "warning" | "error";
 
+// Interface for managing the creation and display of toasts.
 type ToastManager = {
   show: (message: string, type: ToastType) => void;
   success: (message: string) => void;
@@ -13,12 +14,14 @@ const toastTypeStyles: Record<ToastType, string> = {
   error: "border-red-300 bg-red-50 text-red-900 dark:border-red-800 dark:bg-red-950 dark:text-red-200"
 };
 
+// Create a manager to handle toast notifications in a specific container.
 export function createToastManager(container: HTMLElement): ToastManager {
   const activeToasts: HTMLElement[] = [];
   const MAX_VISIBLE_TOASTS = 4;
   let lastToastSignature = "";
   let lastToastAtMs = 0;
 
+  // Use the flip technique to smoothly animate toasts moving to new positions.
   const animateQueueReflow = (elements: HTMLElement[]): void => {
     const before = new Map<HTMLElement, DOMRect>();
     elements.forEach((element) => {
@@ -44,6 +47,7 @@ export function createToastManager(container: HTMLElement): ToastManager {
     });
   };
 
+  // Main logic to create, display, and automatically remove a toast.
   const show = (message: string, type: ToastType): void => {
     const now = Date.now();
     const signature = `${type}:${message}`;
@@ -58,6 +62,7 @@ export function createToastManager(container: HTMLElement): ToastManager {
       oldest?.remove();
     }
 
+    // Initialize the toast element and update the layout for all active notifications.
     const toast = document.createElement("div");
     toast.className = [
       "pointer-events-auto min-w-[260px] max-w-[360px] rounded-lg border px-3 py-2 text-sm shadow-lg",
@@ -75,6 +80,8 @@ export function createToastManager(container: HTMLElement): ToastManager {
     });
 
     let isClosed = false;
+
+    // Handle toast removal with exit animations and reference cleanup.
     const close = () => {
       if (isClosed) {
         return;
@@ -95,7 +102,8 @@ export function createToastManager(container: HTMLElement): ToastManager {
     setTimeout(close, 3200);
     toast.onclick = close;
   };
-
+  
+  // Return helper methods for each notification type.
   return {
     show,
     success: (message: string) => show(message, "success"),
